@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -25,10 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 
-import reactor.core.publisher.Flux;
+
 import university.DTO.CourseDTO;
 import university.Model.Course;
 import university.Service.CourseService;
+import university.Service.SseService;
 import university.Util.OpeningRegPeriods;
 
 @RestController
@@ -39,6 +41,8 @@ public class CourseController {
 	CourseService courseService;
 	@Autowired
 	OpeningRegPeriods openingRegPeriods;
+	@Autowired
+	SseService sseService;
 	@GetMapping("/admin/all")
 	public ResponseEntity<List<CourseDTO>> getAllCourses() {
 		List<CourseDTO> courses=courseService.getAllCourses();
@@ -74,8 +78,8 @@ public class CourseController {
 			@PathVariable("id") int id){
 		return ResponseEntity.ok(courseService.removeCourse(id));
 	}
-	@GetMapping(path="/updateRegNumbers", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public Flux<Map<Integer,Integer>> streamRegNumbers(){
-		return courseService.streamFlux();
+	@GetMapping("/updateRegNumbers")
+	public SseEmitter streamRegNumbers(){
+		return sseService.addEmitter();
 	}
 }

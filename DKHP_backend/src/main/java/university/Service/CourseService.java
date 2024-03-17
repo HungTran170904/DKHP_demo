@@ -20,10 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import jakarta.transaction.Transactional;
-import reactor.core.publisher.DirectProcessor;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.FluxSink;
-import reactor.util.function.Tuple2;
 import university.DTO.CourseDTO;
 import university.DTO.Converter.CourseConverter;
 import university.Exception.RequestException;
@@ -109,22 +105,6 @@ public class CourseService {
 		if(c.isEmpty()) throw new RequestException("Course id "+courseId+" not found!Please try again"); 
 		courseRepo.delete(c.get());
 		return c.get().getCourseId();
-	}
-	public Map<Integer,Integer> getUpdatedRegNumbers(){
-		Map<Integer,Integer> regNumbers=new HashMap();
-		List<Object[]> results=courseRepo.getUpdatedRegNum(openingRegPeriods.getCurrRegPeriod().getSemester());
-		for (Object[] result : results) {
-			   regNumbers.put((Integer) result[0], (Integer) result[1]);
-		}
-		return regNumbers;
-	}
-	@Transactional
-	public Flux<Map<Integer,Integer>> streamFlux(){
-		return Flux.interval(Duration.ofSeconds(3))
-				.map((i)->getUpdatedRegNumbers())
-				.onBackpressureLatest()
-				.retry(3)
-				.onErrorReturn(new HashMap<Integer,Integer>());
 	}
 }
 // https://github.com/spring-projects/spring-framework/issues/31140

@@ -31,6 +31,7 @@ import university.Repository.StudentRepo;
 import university.Repository.SubjectRepo;
 import university.Repository.UserRepo;
 import university.Service.AdminService;
+import university.Service.SseService;
 import university.Service.StudentService;
 import university.Util.OpeningRegPeriods;
 
@@ -41,7 +42,8 @@ public class DemoApplication {
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context=SpringApplication.run(DemoApplication.class, args);
 		OpeningRegPeriods openingRegPeriods=context.getBean(OpeningRegPeriods.class);
+		SseService sseService=context.getBean(SseService.class);
 		openingRegPeriods.update();
+		sseService.startSendingEvents();
 	}
-	//https://github.com/daotq2000/Spotify
 }

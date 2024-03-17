@@ -24,12 +24,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
+		System.out.println("Url: "+request.getRequestURL());
 		String header=request.getHeader(JwtConfig.header);
 		if (request.getRequestURL().indexOf("http://localhost:8080/api/auth")==0) {
             chain.doFilter(request, response);
             return;
         }
-		if(header==null||header.startsWith(JwtConfig.prefix)) 
+		if(header==null||!header.startsWith(JwtConfig.prefix)) 
 			throw new AuthenticationCredentialsNotFoundException("Token is invalid!");
 		String token=header.substring(JwtConfig.prefix.length(),header.length());
 		if(StringUtils.hasText(token)) {
@@ -39,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	                    userDetails.getAuthorities());
 	            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 		}
-			
+		System.out.println("Filter ok");
 		chain.doFilter(request, response);
 	}
 

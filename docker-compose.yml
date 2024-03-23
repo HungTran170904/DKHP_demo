@@ -1,0 +1,49 @@
+version: "3.8"
+services: 
+ mysql-service:
+    image: mysql
+    container_name: mysql-service
+    restart: always
+    ports:
+       - 3308:${DB_PORT}
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_PORT: ${DB_PORT}
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - dkhp-network
+ backend-service:
+   depends_on:
+     - mysql-service
+   container_name: backend-service
+   restart: always
+   build: ./dkhp_backend
+   environment:
+      DB_HOST: mysql-service
+      DB_PORT: ${DB_PORT}
+      DB_PASS: ${DB_PASS}
+      DB_DATABASE: ${DB_DATABASE}
+   ports:
+      - 8080:8080
+   volumes:
+     - ./dkhp_backend:/app/backend
+   networks:
+     - dkhp-network
+ frontend-service:
+    container_name: frontend-service
+    restart: always
+    build: ./dkhp_frontend
+    networks:
+     - dkhp-network
+    ports:
+      - 3000:80
+    volumes:
+      - ./dkhp_frontend:/app/frontend
+
+networks:
+  dkhp-network:
+
+volumes:
+  db:

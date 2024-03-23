@@ -45,7 +45,6 @@ const OpeningRegPeriod=()=>{
                     setShow(1);
           }
           const handleSubmit=()=>{
-                console.log("dto",regPeriodDTO)
                 if(flag){
                     addRegPeriod(regPeriodDTO).then(res=>{
                         setRegPeriodData((prevData)=>{
@@ -79,6 +78,7 @@ const OpeningRegPeriod=()=>{
           const handleDelButton=(e,id)=>{
                 e.preventDefault();
                 removeRegPeriod(id).then(res=>{
+                    setRegPeriodData(prev=>prev.filter(data=>data.id!=id));
                     config.variant="success";
                     enqueueSnackbar("Xóa thành công đợt đăng kí", config)
                 })

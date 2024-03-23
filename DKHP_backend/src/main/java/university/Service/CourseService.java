@@ -107,4 +107,3 @@ public class CourseService {
 		return c.get().getCourseId();
 	}
 }
-// https://github.com/spring-projects/spring-framework/issues/31140

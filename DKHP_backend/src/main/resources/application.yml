@@ -1,0 +1,15 @@
+management:
+  security:
+    enabled: false
+  endpoint:
+    metrics:
+      enabled: true
+      prometheus: true
+    health:
+      show-details: always
+    info:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, metrics, info, health

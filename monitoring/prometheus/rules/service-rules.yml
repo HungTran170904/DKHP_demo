@@ -1,0 +1,38 @@
+groups:
+  - name: backend-service-rules
+    rules:
+      - record: instance:http_requests:rate5m
+        expr: sum(http_server_requests_active_seconds_active_count > 100)
+      -  alert: 'alert when the number of http requests exceeds 100'
+         expr: http_server_requests_active_seconds_active_count > 100
+         for: 10s
+         labels:
+           severity: "critical"
+         annotations:
+           summary: "High number of HTTP requests to backend server:{{.instance}}"
+           description: "High number of HTTP requests to backend server:{{.instance}}"
+      - alert: 'alert when backend server is down'
+        expr: up{instance="backend-service:8080", job="backend-exporter"}==0
+        for: 5s
+        annotations:
+          summary: "Backend Server {{.instance}} was down"
+          description: "Backend Server {{.instance}} was down"
+  - name: frontend-service-rules
+    rules:
+    - alert: 'alert when frontend-service is down'
+      expr: nginx_up{instance="nginx-exporter:9113", job="nginx-exporter"}==0
+      for: 5s
+      annotations:
+        summary: "Nginx Server {{.instance}} was down"
+        description: "Nginx Server {{.instance}} was down"
+  - name: mysql-service-rules
+    rules:
+      - alert: 'alert when mysql-service is down'
+        expr: mysql_up{instance="mysql-exporter:9104", job="mysql-exporter"}==0
+        for: 5s
+        annotations:
+          summary: "Mysql Server {{.instance}} was down"
+          description: "Mysql Server {{.instance}} was down" 
+  
+           
+    

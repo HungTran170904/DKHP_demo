@@ -1,0 +1,12 @@
+route:
+  group_by: ['alertname']
+  receiver: 'gmail-notifications'
+receivers:
+- name: 'gmail-notifications'
+  email_configs:
+  - to: 22520527@gmail.com
+    from: tienhung17092004@gmail.com
+    smarthost: smtp.gmail.com:587
+    auth_username: tienhung17092004@gmail.com
+    auth_identity: tienhung17092004@gmail.com
+    auth_password: 'm h o m p y h b j t m a h d b k'

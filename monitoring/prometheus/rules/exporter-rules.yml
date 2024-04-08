@@ -1,0 +1,17 @@
+groups:
+  - name: nginx-export-rules
+    rules:
+      - alert: 'alert when nginx exporter is down'
+        expr: up{instance="nginx-exporter:9113", job="nginx-exporter"}==0
+        for: 5s
+        annotations:
+          summary: "Nginx exporter {{.instance}} was down"
+          description: "Nginx exporter {{.instance}} was down"
+  - name: mysql-exporter-rules
+    rules:
+       - alert: 'alert when mysql exporter is down'
+         expr: up{instance="mysql-exporter:9104", job="mysql-exporter"}==0
+         for: 5s
+         annotations:
+           summary: "MySql exporter {{.instance}} was down"
+           description: "MySql exporter {{.instance}} was down"

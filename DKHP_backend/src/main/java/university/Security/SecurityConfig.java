@@ -48,7 +48,7 @@ public class SecurityConfig {
 			.and()
 			.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 			.authorizeHttpRequests((requests) -> requests
-				.requestMatchers("/api/auth/**").permitAll()
+				.requestMatchers("/api/auth/**","/actuator/prometheus").permitAll()
 				.requestMatchers("/**/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated()
 			);

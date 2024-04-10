@@ -1,8 +1,10 @@
 groups:
   - name: backend-service-rules
     rules:
-      - record: instance:http_requests:rate5m
-        expr: sum(http_server_requests_active_seconds_active_count > 100)
+      - record: http_request_duration_sum
+        expr: sum(http_server_requests_active_seconds_active_count)
+      - record: jvm_used_bytes_sum_percentage
+        expr: sum(jvm_memory_used_bytes)/sum(jvm_memory_max_bytes)*100
       -  alert: 'alert when the number of http requests exceeds 100'
          expr: http_server_requests_active_seconds_active_count > 100
          for: 10s

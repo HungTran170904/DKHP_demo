@@ -79,16 +79,16 @@ services:
   prometheus:
       user: root
       image: prom/prometheus
+      hostname: localhost
       container_name: prometheus
       ports:
         - 9090:9090
       restart: always
       # Mount config file from local to container
       volumes:
-        - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-        - ./monitoring/prometheus/data:/prometheus
+        - './monitoring/prometheus:/config'
       command:
-        - '--config.file=/etc/prometheus/prometheus.yml'
+        - '--config.file=/config/prometheus.yml'
         - '--web.enable-lifecycle'
       networks:
         - dkhp-network
@@ -96,6 +96,7 @@ services:
       # Run a container as root user
       user: root
       image: prom/alertmanager
+      hostname: localhost
       container_name: alertmanager
       depends_on:
         - prometheus
@@ -103,8 +104,7 @@ services:
       ports:
         - 9093:9093
       volumes: 
-        - './monitoring/alertmanager/alertmanager.yml:/config/alertmanager.yml'
-        - './monitoring/alertmanager/data:/alertmanager/data'
+        - './monitoring/prometheus:/config'
       command:
          - '--config.file=/config/alertmanager.yml'
       networks:
@@ -112,6 +112,7 @@ services:
   grafana:
      user: root
      image: grafana/grafana
+     hostname: localhost
      depends_on:
         - prometheus
      ports:
@@ -119,7 +120,6 @@ services:
      restart: always
      volumes:
         - './monitoring/grafana/grafana.ini:/etc/grafana/grafana.ini'
-        - './monitoring/grafana/data:/var/lib/grafana'
      networks:
         - dkhp-network
 networks:

@@ -3,6 +3,7 @@ package university.Util;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
+import university.Exception.RequestException;
 
 @Component
 public class InfoChecking {
@@ -12,14 +13,11 @@ public class InfoChecking {
 		else return 0;
 	}
 	public String getSubjectId(String courseId) {
-		if(courseId==null) return "";
-		String s="";
-		int i=0;
-		while(i<courseId.length()&&courseId.charAt(i)!='.') {
-			s+=courseId.charAt(i);
-			i++;
-		}
-		return s;
+		String subjectId=courseId.substring(0,courseId.indexOf("."));
+		String courseSection=courseId.substring(courseId.indexOf(".") + 1);
+		if(!Pattern.matches("^O\\d+", courseSection))
+			throw new RequestException("The courseId must be in format '<subjectId>.O<number>'");
+		return subjectId;
 	}
 	public boolean checkEmail(String email) {
 		return Pattern.matches("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$",email);

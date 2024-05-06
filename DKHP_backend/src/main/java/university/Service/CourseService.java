@@ -76,7 +76,6 @@ public class CourseService {
 			return courseConverter.convertToDTO(courses);
 	}
 	public CourseDTO addCourse(CourseDTO dto) {
-		CourseDTO response=null;
 		if(dto.getCourseId()==null) throw new RequestException("CourseId is required");
 		if(courseRepo.existsByCourseId(dto.getCourseId()))
 			throw new RequestException("The course id "+dto.getCourseId()+" has already existed");
@@ -94,11 +93,8 @@ public class CourseService {
 		}
 		Semester se=semesterRepo.findById(dto.getSemesterId()).orElseThrow(()->new RequestException("SemesterId "+dto.getSemesterId()+" not found!"));
 		c.setSemester(se);
-		Course courseSave=courseRepo.save(c);
-		if(courseSave!=null) {
-			response=courseConverter.convertToDTO(courseSave);
-		}
-		return response;
+		Course savedCourse=courseRepo.save(c);
+		return courseConverter.convertToDTO(savedCourse);
 	}
 	public String removeCourse(Integer courseId) {
 		var c=courseRepo.findById(courseId);

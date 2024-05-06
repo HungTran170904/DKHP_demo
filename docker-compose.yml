@@ -14,12 +14,13 @@ services:
       - db:/var/lib/mysql
     networks:
       - dkhp-network
-  backend-service:
+  # Spring boot server connect to database
+  backend-service: 
+   image: hungtran679/dkhp_demo-backend-service:latest
    container_name: backend-service
    depends_on:
      - mysql-service
    restart: always
-   build: ./dkhp_backend
    environment:
       DB_HOST: mysql-service
       DB_PORT: ${DB_PORT}
@@ -32,9 +33,9 @@ services:
    networks:
      - dkhp-network
   frontend-service:
+    image: hungtran679/dkhp_demo-frontend-service:latest
     container_name: frontend-service
     restart: always
-    build: ./dkhp_frontend
     networks:
      - dkhp-network
     ports:

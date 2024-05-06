@@ -73,7 +73,7 @@ const SemesterPage=()=>{
                                               <tr key={index}>
                                                   <th>{index+1}</th>
                                                   <td>Kì {data.semesterNum}</td>
-                                                  <td>Năm học {data.year}</td>
+                                                  <td>Năm học {data.year}-{data.year+1}</td>
                                                   <td colSpan={2}>
                                                             <button type="button" className="btn btn-danger mr-2" onClick={(e)=>handleDelButton(e,data.id)}>Delete</button>
                                                   </td>

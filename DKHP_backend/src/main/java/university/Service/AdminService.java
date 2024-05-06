@@ -67,24 +67,19 @@ public class AdminService {
 	public void removeRegPeriod(int regPeriodId) {
 		RegistrationPeriod regPeriod=regPeriodRepo.findById(regPeriodId)
 				.orElseThrow(()->new RequestException("RegPeriodId "+regPeriodId+" does not exist"));
-		LocalDateTime now=LocalDateTime.now();
-		if(regPeriod.getOpenTime().isBefore(now)
-				&&regPeriod.getCloseTime().isAfter(now))
-			throw new RequestException("Unable to delete because the chosen Registration Period is opening");
 		regPeriodRepo.delete(regPeriod);
 		openingRegPeriods.update();
 	}
 	public RegistrationPeriod updateRegPeriod(RegistrationPeriod dto) {
 		if(dto==null||dto.getOpenTime()==null||dto.getCloseTime()==null||dto.getSemester()==null)
 			throw new RequestException("All attributes of updatedRegPeriod are required");
+		if(dto.getCloseTime().isBefore(LocalDateTime.now()))
+			throw new RequestException("CloseTime must be before current time");
 		RegistrationPeriod regPeriod=regPeriodRepo.findById(dto.getId())
 				.orElseThrow(()->new RequestException("RegPeriodId "+dto.getId()+" does not exist in database!"));
-		LocalDateTime now=LocalDateTime.now();
-		if(dto.getOpenTime().isBefore(now)&&dto.getCloseTime().isAfter(now))
-			throw new RequestException("Unable to change the regPeriod because it is opening!");
 		Semester se=semesterRepo.findById(dto.getSemester().getId())
 				.orElseThrow(()->new RequestException("The updated semesterId does not exist in database"));
-		
+
 		regPeriod.setOpenTime(dto.getOpenTime());
 		regPeriod.setCloseTime(dto.getCloseTime());
 		regPeriod.setSemester(dto.getSemester());

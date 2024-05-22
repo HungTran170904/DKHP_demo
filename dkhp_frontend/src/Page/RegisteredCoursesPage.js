@@ -7,18 +7,23 @@ import { ClientContext} from "../Router/ClientRouter";
 import { RegisteredCourses_AlertModal, RegisteredCourses_ResultModal } from "../Component/Modal";
 const RegisteredCoursesPage=()=>{
           const {courseData, setError}=useContext(ClientContext);
-          const [courseIds, setCourseIds]=useState(new Set());
-          const [regCourseIds, setRegCourseIds]=useState([]);
-          const [modal, setModal]=useState({show:0, data:null});//0:ko show, 1:show alertModal, 2:show resultModal
+          const [checkedIds, setCheckedIds]=useState(new Set());
+          const [regIds, setRegIds]=useState([]);
+          const [modal, setModal]=useState({show:0, data:null}); //0:ko show, 1:show alertModal, 2:show resultModal
           const [isDelButtonDisabled, setIsDelButtonDisabled]=useState(true);
           const sendRequest=()=>{
-                    unenrollCourses([...courseIds]).then(res=>{
+                    unenrollCourses([...checkedIds]).then(res=>{
                               const result=new Map(Object.entries(res.data));
-                              setRegCourseIds(prev=>{
-                                    const updatedRegCourseIds=prev.filter(courseId=>result.get(courseId)&&result.get(courseId)=="Unenroll successfully");
-                                    return updatedRegCourseIds;
+                              const deletedRegIds=new Set();
+                              courseData.forEach(c=>{
+                                    var info=result.get(c.courseId);
+                                   if(info=="Unenroll successfully") deletedRegIds.add(c.id);
                               })
-                              setModal({show:2, data:regCourseIds});
+                              setRegIds(prevIds=>{
+                                    return prevIds.filter(id=>!deletedRegIds.has(id));
+                              });
+                              setCheckedIds(new Set());
+                              setModal({show:2, data:result});
                       })
                       .catch(err=>setError(err))
            }
@@ -26,15 +31,15 @@ const RegisteredCoursesPage=()=>{
                   setModal({show:false, data:[]});
             }
             useEffect(()=>{
-                        if(courseIds.size===0) setIsDelButtonDisabled(true);
+                        if(checkedIds.size===0) setIsDelButtonDisabled(true);
                         else setIsDelButtonDisabled(false);
-            },[courseIds])
+            },[checkedIds])
             useEffect(()=>{
                         getEnrolledCourses().then(res=>{
-                              setRegCourseIds(res.data);
-                        })
+                              setRegIds(res.data);
+                        }).catch(err=>setError(err))
                   },[])
-                  const filterCourses=courseData.filter(course=>regCourseIds.indexOf(course.id)>-1);
+                  const filterCourses=courseData.filter(course=>regIds.indexOf(course.id)>-1);
                   const regInfo={numberOfCourses:filterCourses.length,creditNumber:0};
                   for(let course of filterCourses) regInfo.creditNumber+=course.subject.theoryCreditNumber;
         return(
@@ -45,10 +50,10 @@ const RegisteredCoursesPage=()=>{
                                         <button type="button" className="btn btn-danger" onClick={()=>setModal({show:1,data:null})} disabled={isDelButtonDisabled}>Hủy đăng kí</button>
                                         
                               </div>
-                              <CourseTable filterCourses={filterCourses} courseIds={courseIds} setCourseIds={setCourseIds}/>
+                              <CourseTable filterCourses={filterCourses} checkedIds={checkedIds} setCheckedIds={setCheckedIds}/>
                     </div>
                     {modal.show!=0&&
-                          (modal.show==1?<RegisteredCourses_AlertModal modal={modal} courseData={courseData} courseIds={courseIds} sendRequest={sendRequest} handleClose={handleClose}/>
+                          (modal.show==1?<RegisteredCourses_AlertModal modal={modal} courseData={courseData} checkedIds={checkedIds} sendRequest={sendRequest} handleClose={handleClose}/>
                                 :<RegisteredCourses_ResultModal modal={modal} handleClose={handleClose}/>)}
           </>
           );

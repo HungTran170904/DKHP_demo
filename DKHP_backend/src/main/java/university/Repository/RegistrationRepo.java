@@ -12,11 +12,11 @@ import university.Model.RegistrationKey;
 
 @Repository
 public interface RegistrationRepo extends JpaRepository<Registration,RegistrationKey> {
-	@Query(value="insert into Registration(student_id, course_id) values(?1,?2)", nativeQuery=true)
+	@Query(value="insert into registration(student_id, course_id) values(?1,?2)", nativeQuery=true)
 	@Modifying
     @Transactional
 	public void addCourse(int studentId, int courseId);
-	@Query(value="delete from Registration where student_id=?1 and course_id=?2", nativeQuery=true)
+	@Query(value="delete from registration where student_id=?1 and course_id=?2", nativeQuery=true)
 	@Modifying
     @Transactional
 	public void removeCourse(int studentId, int courseId);

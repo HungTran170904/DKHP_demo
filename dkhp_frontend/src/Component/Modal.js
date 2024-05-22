@@ -3,7 +3,7 @@ import { Button, Modal } from "react-bootstrap";
 export  const OpenedCourses_ResultModal=React.memo(({modal, handleClose})=>{
           const successCourses=new Set();
           const failedCourses=new Map();
-          modal.data.forEach(function(value,key){
+          modal.data.forEach((value,key)=>{
                     if(value==="Enroll successfully") successCourses.add(key)
                     else failedCourses.set(key,value);
           })
@@ -29,17 +29,17 @@ export  const OpenedCourses_ResultModal=React.memo(({modal, handleClose})=>{
           </Modal.Footer>
         </Modal>
       )})
- export const RegisteredCourses_AlertModal=React.memo(({modal, courseData, courseIds, sendRequest,handleClose})=>{
+ export const RegisteredCourses_AlertModal=React.memo(({modal, courseData, checkedIds, sendRequest,handleClose})=>{
           const DeletedCourseNames=[]
           for(let c of courseData){
-                    if(courseIds.has(c.id)) DeletedCourseNames.push(c.courseId)
+                    if(checkedIds.has(c.id)) DeletedCourseNames.push(c.courseId)
           }
           return(
           <Modal show={modal.show==1} onHide={handleClose}>
                     <Modal.Header closeButton>
                               <Modal.Title>Hủy học phần</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>Bạn có chắc muốn hủy đăng kí các học phần: {[...DeletedCourseNames]}
+                    <Modal.Body>Bạn có chắc muốn hủy đăng kí các học phần: {DeletedCourseNames.map(name=>name+", ")}
                     </Modal.Body>
                     <Modal.Footer>
                               <Button variant="warning" onClick={handleClose}>
@@ -55,7 +55,7 @@ export  const OpenedCourses_ResultModal=React.memo(({modal, handleClose})=>{
 export const RegisteredCourses_ResultModal=React.memo(({modal, handleClose})=>{
           const successCourses=new Set();
           const failedCourses=new Map();
-          modal.data.forEach(function(value,key){
+          modal.data.forEach((value,key)=>{
                     if(value==="Unenroll successfully") successCourses.add(key)
                     else failedCourses.set(key,value);
           })

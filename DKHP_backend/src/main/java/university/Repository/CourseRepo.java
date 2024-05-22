@@ -35,5 +35,6 @@ public interface CourseRepo extends JpaRepository<Course,Integer>{
 	public List<Object[]> getUpdatedRegNum(Semester semester);
 	
 	public boolean existsByCourseId(String courseId);
+	public boolean existsByMainCourse(Course course);
 	public Optional<Course> findByCourseId(String courseId);
 }

@@ -6,15 +6,15 @@ import { OpenedCourses_ResultModal } from "../Component/Modal";
 const OpenedCoursesPage=()=>{
           const {courseData,setError}=useContext(ClientContext);
           const[modal, setModal]=useState({show:false, data:[]});
-          const [courseIds, setCourseIds]=useState(new Set());
+          const [checkedIds, setCheckedIds]=useState(new Set());
           const [isDKButtonDisabled, setIsDKButtonDisabled]=useState(true);
           const [searchTerm, setSearchTerm]=useState("");
           const [search, setSearch]=useState("");
           function handleDKButton(e){
                 e.preventDefault();
-                enrollCourses([...courseIds]).then(res=>{
+                enrollCourses([...checkedIds]).then(res=>{
                         setModal({show:true, data:new Map(Object.entries(res.data))});
-                        setCourseIds(new Set())
+                        setCheckedIds(new Set())
                 })
                 .catch(err=>setError(err))
             }
@@ -22,9 +22,9 @@ const OpenedCoursesPage=()=>{
                   setModal({show:false, data:[]});
             }
           useEffect(()=>{
-                if(courseIds.size===0) setIsDKButtonDisabled(true);
+                if(checkedIds.size===0) setIsDKButtonDisabled(true);
                 else setIsDKButtonDisabled(false);
-          },[courseIds])
+          },[checkedIds])
           const handleFilter = (item) => {
                 const re = new RegExp("^"+search,"i");
                 return item.courseId.match(re);
@@ -41,7 +41,7 @@ const OpenedCoursesPage=()=>{
                                         <button className="btn btn-outline-success" type="submit" >Search</button>
                               </form>
                     </div>
-                    <CourseTable filterCourses={filterCourses} courseIds={courseIds} setCourseIds={setCourseIds}/>
+                    <CourseTable filterCourses={filterCourses} checkedIds={checkedIds} setCheckedIds={setCheckedIds}/>
           </div>
            <OpenedCourses_ResultModal modal={modal} handleClose={handleClose}/>
           </>

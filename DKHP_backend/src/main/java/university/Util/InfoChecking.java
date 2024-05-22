@@ -15,8 +15,8 @@ public class InfoChecking {
 	public String getSubjectId(String courseId) {
 		String subjectId=courseId.substring(0,courseId.indexOf("."));
 		String courseSection=courseId.substring(courseId.indexOf(".") + 1);
-		if(!Pattern.matches("^O\\d+", courseSection))
-			throw new RequestException("The courseId must be in format '<subjectId>.O<number>'");
+		if(!Pattern.matches("^O\\d+(\\.\\d+)?$", courseSection))
+			throw new RequestException("The courseId must be in format '<subjectId>.O<number>[.<number>]'");
 		return subjectId;
 	}
 	public boolean checkEmail(String email) {

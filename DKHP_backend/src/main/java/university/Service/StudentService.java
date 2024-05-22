@@ -38,7 +38,7 @@ import university.Repository.UserRepo;
 import university.Security.CustomUserDetails;
 import university.Util.InfoChecking;
 import university.Util.OpeningRegPeriods;
-//https://www.baeldung.com/spring-mvc-sse-streams
+
 @Service
 @Transactional
 public class StudentService {

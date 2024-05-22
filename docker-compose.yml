@@ -5,7 +5,7 @@ services:
     container_name: mysql-service
     restart: always
     ports:
-       - 3308:${DB_PORT}
+      - 3308:3306
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${DB_PASS}
@@ -16,7 +16,7 @@ services:
       - dkhp-network
   # Spring boot server connect to database
   backend-service: 
-   image: hungtran679/dkhp_demo-backend-service:latest
+   image: hungtran679/dkhp_demo-backend-service
    container_name: backend-service
    depends_on:
      - mysql-service
@@ -28,20 +28,16 @@ services:
       DB_DATABASE: ${DB_DATABASE}
    ports:
       - 8080:8080
-   volumes:
-     - ./dkhp_backend:/app/backend
    networks:
      - dkhp-network
   frontend-service:
-    image: hungtran679/dkhp_demo-frontend-service:latest
+    image: hungtran679/dkhp_demo-frontend-service
     container_name: frontend-service
     restart: always
     networks:
      - dkhp-network
     ports:
       - 3001:80
-    volumes:
-      - ./dkhp_frontend:/app/frontend
   # prometheus exporter for mysql-service
   mysql-exporter:
     container_name: prometheus-mysql-exporter
@@ -72,8 +68,8 @@ services:
      ports:
       - 9113:9113
      command:
-       - -nginx.scrape-uri
-       - http://frontend-service:3000/stub_status 
+       - '-nginx.scrape-uri'
+       - 'http://frontend-service:80/stub_status'
      networks:
         - dkhp-network
   # prometheus

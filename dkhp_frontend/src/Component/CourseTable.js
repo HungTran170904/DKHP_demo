@@ -2,14 +2,14 @@ import React, { useContext } from "react";
 import TableHeader from "./TableHeader";
 import { formatDate } from "../Util/FormatDateTime.js";
 import { ClientContext } from "../Router/ClientRouter.js";
-const CourseTable=({filterCourses, courseIds, setCourseIds})=>{
+const CourseTable=({filterCourses,checkedIds,setCheckedIds})=>{
             const {regNumbers}=useContext(ClientContext);
             const handleCheckbox=(e,id)=>{
-                    setCourseIds((prevCourseIds)=>{
-                        const updateCourseIds=new Set([...prevCourseIds]);
-                        if(e.target.checked) updateCourseIds.add(id);
-                        else updateCourseIds.delete(id);
-                        return updateCourseIds;
+                    setCheckedIds(prevIds=>{
+                        var updateIds=new Set([...prevIds]);
+                        if(e.target.checked) updateIds.add(id);
+                        else updateIds.delete(id);
+                        return updateIds;
                     });
             }
         return (
@@ -20,7 +20,7 @@ const CourseTable=({filterCourses, courseIds, setCourseIds})=>{
                         {filterCourses?.map((data)=> {
                                 return (
                                     <tr key={data.id}>
-                                        <th scope="row"><input type="checkbox" className="form-check-input" onChange={(e)=>handleCheckbox(e,data.id)} checked={courseIds.has(data.id)}/></th>
+                                        <th scope="row"><input type="checkbox" className="form-check-input" onChange={(e)=>handleCheckbox(e,data.id)} checked={checkedIds.has(data.id)}/></th>
                                         <td>{data.courseId}</td>
                                         <td>{data.subject.subjectName}</td>
                                         <td>{data.subject.theoryCreditNumber}</td>

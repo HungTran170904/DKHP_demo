@@ -46,8 +46,8 @@ public class AdminService {
 	public RegistrationPeriod addRegPeriod(RegistrationPeriod dto) {
 		Optional<Semester> semester=semesterRepo.findById(dto.getSemester().getId());
 		if(semester.isEmpty()) throw new RequestException("SemesterId "+dto.getSemester().getId()+" does not exist");
-		LocalDateTime openTime=dto.getOpenTime();
-		LocalDateTime closeTime=dto.getOpenTime();
+		var openTime=dto.getOpenTime();
+		var closeTime=dto.getCloseTime();
 		if(openTime.isAfter(closeTime)) throw new RequestException("OpenTime must be before closeTime");
 		LocalDateTime now=LocalDateTime.now();
 		if(openTime.isBefore(now)) throw new RequestException("The openTime must be after the current time");

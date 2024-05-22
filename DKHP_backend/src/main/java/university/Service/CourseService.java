@@ -97,9 +97,10 @@ public class CourseService {
 		return courseConverter.convertToDTO(savedCourse);
 	}
 	public String removeCourse(Integer courseId) {
-		var c=courseRepo.findById(courseId);
-		if(c.isEmpty()) throw new RequestException("Course id "+courseId+" not found!Please try again"); 
-		courseRepo.delete(c.get());
-		return c.get().getCourseId();
+		var c=courseRepo.findById(courseId).orElseThrow(()->new RequestException("CourseId "+courseId+" does not exist!"));
+		if(c.getMainCourse()==null&&courseRepo.existsByMainCourse(c))
+			throw new RequestException("The course "+courseId+" has practice courses. Please delete them first");
+		courseRepo.delete(c);
+		return c.getCourseId();
 	}
 }

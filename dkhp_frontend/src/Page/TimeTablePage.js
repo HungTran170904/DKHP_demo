@@ -36,7 +36,7 @@ const TimeTablePage=()=>{
                                                       <th className="text-uppercase">Thứ / Tiết</th>
                                                       {daysOfWeek.map((day, index)=>(<th className="text-uppercase" key={index}>{day}</th>))}
                                                   </tr>
-                                              </thead>
+                                        </thead>
                                         <tbody>
                                         {TimeOfShifts.map((time,index)=>{
                                                 const days=new Array(6).fill(null);

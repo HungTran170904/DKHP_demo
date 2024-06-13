@@ -4,9 +4,9 @@ route:
 receivers:
 - name: 'gmail-notifications'
   email_configs:
-  - to: 22520527@gm.uit.edu.vn
-    from: tienhung17092004@gmail.com
+  - to: xxxxxxx
+    from: xxxxxxxxx
     smarthost: smtp.gmail.com:587
-    auth_username: tienhung17092004@gmail.com
-    auth_identity: tienhung17092004@gmail.com
-    auth_password: 'm h o m p y h b j t m a h d b k'
+    auth_username: xxxxxxxxxxx
+    auth_identity: xxxxxxxxxxx
+    auth_password: 'xxxxxxxxxx'

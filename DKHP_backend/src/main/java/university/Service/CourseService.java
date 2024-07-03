@@ -1,13 +1,6 @@
 package university.Service;
 
-import java.time.Duration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,21 +9,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import jakarta.transaction.Transactional;
 import university.DTO.CourseDTO;
 import university.DTO.Converter.CourseConverter;
 import university.Exception.RequestException;
-import university.Model.Course;
-import university.Model.Semester;
-import university.Model.Student;
-import university.Model.Subject;
-import university.Repository.CourseRepo;
-import university.Repository.SemesterRepo;
-import university.Repository.StudentRepo;
-import university.Repository.SubjectRepo;
+import university.Model.*;
+import university.Repository.*;
 import university.Util.InfoChecking;
 import university.Util.OpeningRegPeriods;
 
@@ -49,8 +34,7 @@ public class CourseService {
 	CourseConverter courseConverter;
 	@Autowired
 	InfoChecking infoChecking;
-	@Autowired
-	OpeningRegPeriods openingRegPeriods;
+	
 	public int getStudentIdFromSecurityContext() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(auth==null) throw new BadCredentialsException("You need to login before register courses!");
@@ -61,13 +45,13 @@ public class CourseService {
 	public List<CourseDTO> getAllCourses(){
 		return courseConverter.convertToDTO(courseRepo.findAll());
 	}
-	public List<CourseDTO> getOpenedCourses(){
-		List<Course> courses=courseRepo.findOpenedCourses(openingRegPeriods.getCurrRegPeriod().getSemester());
+	public List<CourseDTO> getOpenedCourses(RegistrationPeriod currRegPeriod){
+		List<Course> courses=courseRepo.findOpenedCourses(currRegPeriod.getSemester());
 		return courseConverter.convertToDTO(courses);
 	}
-	public List<Integer> getEnrolledCourses(){
+	public List<Integer> getEnrolledCourses(RegistrationPeriod currRegPeriod){
 		int studentId=getStudentIdFromSecurityContext();
-		List<Integer> courseIds=courseRepo.findEnrolledCourseIds(openingRegPeriods.getCurrRegPeriod().getSemester(),studentId);
+		List<Integer> courseIds=courseRepo.findEnrolledCourseIds(currRegPeriod.getSemester(),studentId);
 		return courseIds;
 	}
 	public List<CourseDTO> getStudiedCourses(int semesterId){

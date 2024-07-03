@@ -43,6 +43,7 @@ public class CourseController {
 	OpeningRegPeriods openingRegPeriods;
 	@Autowired
 	SseService sseService;
+
 	@GetMapping("/admin/all")
 	public ResponseEntity<List<CourseDTO>> getAllCourses() {
 		List<CourseDTO> courses=courseService.getAllCourses();
@@ -50,14 +51,14 @@ public class CourseController {
 	}
 	@GetMapping("/openedCourses")
 	public ResponseEntity<List<CourseDTO>> getOpenedCourses() {
-		openingRegPeriods.validateRegPeriod();
-		List<CourseDTO> courses=courseService.getOpenedCourses();
+		var currRegPeriod=openingRegPeriods.validateRegPeriod();
+		List<CourseDTO> courses=courseService.getOpenedCourses(currRegPeriod);
 		return new ResponseEntity(courses, HttpStatus.OK);
 	}
 	@GetMapping("/enrolledCourses")
 	public ResponseEntity<List<Integer>> getEnrolledCourses() {
-		openingRegPeriods.validateRegPeriod();
-		List<Integer> courseIds=courseService.getEnrolledCourses();
+		var currRegPeriod=openingRegPeriods.validateRegPeriod();
+		List<Integer> courseIds=courseService.getEnrolledCourses(currRegPeriod);
 		return new ResponseEntity(courseIds, HttpStatus.OK);
 	}
 	@GetMapping("/studiedCourses")

@@ -16,10 +16,6 @@ public class JwtProvider {
 		String id=auth.getName();
 		Date currentDate = new Date();
 		Date expireDate = new Date(currentDate.getTime() + JwtConfig.expiration);
-		String role = "";
-		for (GrantedAuthority authority : auth.getAuthorities()) {
-		    role = authority.getAuthority();
-		}
 		String token= Jwts.builder()
 				.setSubject(id)
 				.setIssuedAt(currentDate)

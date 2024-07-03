@@ -44,4 +44,3 @@ public class DataLoader implements CommandLineRunner{
 		}
 	}
 }
-//$2a$10$pMSlqDkeC2FpbMPObK.jKue0q.kyXrj8Ygkjov5px6qyKAOKYEGrm

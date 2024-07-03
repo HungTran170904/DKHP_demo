@@ -25,6 +25,7 @@ public class SubjectService {
 	private SubjectRepo subjectRepo;
 	@Autowired
 	private SubjectConverter subjectConverter;
+
 	public List<SubjectDTO> getAllSubjects(){
 		List<Subject> subjects=subjectRepo.getAll();
 		List<SubjectDTO> subjectDTOs=subjectConverter.convertToAllDependencies(subjects);

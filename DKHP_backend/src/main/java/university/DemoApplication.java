@@ -44,10 +44,8 @@ public class DemoApplication {
 		ConfigurableApplicationContext context=SpringApplication.run(DemoApplication.class, args);
 		Environment env=context.getBean(Environment.class);
 		System.out.println("Sql string: "+env.getProperty("spring.datasource.url"));
-		OpeningRegPeriods openingRegPeriods=context.getBean(OpeningRegPeriods.class);
-		SseService sseService=context.getBean(SseService.class);
 
-		openingRegPeriods.update();
+		SseService sseService=context.getBean(SseService.class);
 		sseService.startSendingEvents();
 	}
 }

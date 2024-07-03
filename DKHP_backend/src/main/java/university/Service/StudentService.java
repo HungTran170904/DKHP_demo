@@ -24,11 +24,7 @@ import university.DTO.StudentDTO;
 import university.DTO.Converter.StudentConverter;
 import university.Exception.DatabaseException;
 import university.Exception.RequestException;
-import university.Model.Course;
-import university.Model.Student;
-import university.Model.Subject;
-import university.Model.SubjectRelation;
-import university.Model.User;
+import university.Model.*;
 import university.Repository.CourseRepo;
 import university.Repository.RegistrationRepo;
 import university.Repository.RoleRepo;
@@ -59,9 +55,8 @@ public class StudentService {
 	@Autowired
 	StudentConverter studentConverter;
 	@Autowired
-	OpeningRegPeriods openingRegPeriods;
-	@Autowired
 	PasswordEncoder encoder;
+
 	private List<Course> getUnenrolledCourses(List<Integer> courseIds,Map<String,String> result){
 		List<Course> unenrolledCourses=new LinkedList();
 		Map<Integer,List<Course>> unenrolledSubjects=new HashMap();
@@ -180,13 +175,13 @@ public class StudentService {
 		int userId= Integer.valueOf(userDetails.getUsername());
 		return studentRepo.findStudentIdByUserId(userId);
 	}
-	public Map<String,String> enrollCourses(List<Integer> courseIds){
+	public Map<String,String> enrollCourses(List<Integer> courseIds, RegistrationPeriod currRegPeriod){
 		int studentId=getStudentIdFromSecurityContext();
 		Map<String,String> result=new HashMap();
 		List<Course> unenrolledCourses=getUnenrolledCourses(courseIds, result);
 		if(unenrolledCourses.isEmpty()) return result;
-		List<Course> enrolledCourses=courseRepo.findEnrolledCourses(openingRegPeriods.getCurrRegPeriod().getSemester(), studentId);
-		Set<Integer> studiedSubjectIds=subjectRepo.getStudiedSubjectIds(openingRegPeriods.getCurrRegPeriod().getSemester(), studentId);
+		List<Course> enrolledCourses=courseRepo.findEnrolledCourses(currRegPeriod.getSemester(), studentId);
+		Set<Integer> studiedSubjectIds=subjectRepo.getStudiedSubjectIds(currRegPeriod.getSemester(), studentId);
 		String str;
 		for(Course c: unenrolledCourses) {
 			str=checkByUnenrolledCourses(unenrolledCourses,c);
@@ -209,7 +204,7 @@ public class StudentService {
 		}
 		return result;
 	}
-	public Map<String,String> unenrollCourses(List<Integer> courseIds){
+	public Map<String,String> unenrollCourses(List<Integer> courseIds, RegistrationPeriod currRegPeriod){
 		int studentId=getStudentIdFromSecurityContext();
 		Map<String,String> result=new HashMap();
 		ArrayList<Course> courses=new ArrayList();
@@ -220,7 +215,7 @@ public class StudentService {
 		}
 		for(int i=0;i<courses.size();i++) {
 			if(courses.get(i)==null) continue;
-			if(courses.get(i).getSemester().getId()!=openingRegPeriods.getCurrRegPeriod().getSemester().getId()) {
+			if(courses.get(i).getSemester().getId()!=currRegPeriod.getSemester().getId()) {
 				result.put(courses.get(i).getCourseId(),"Can not unenroll courses that were registered in previous semesters");
 			}
 			else if(courses.get(i).getSubject().getPracticeCreditNumber()>0) {

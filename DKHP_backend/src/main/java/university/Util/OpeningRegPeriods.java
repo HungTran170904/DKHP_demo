@@ -21,29 +21,12 @@ import university.Repository.RegistrationPeriodRepo;
 public class OpeningRegPeriods {
 	@Autowired
 	private RegistrationPeriodRepo regPeriodRepo;
-	private TreeSet<RegistrationPeriod> regPeriods=new TreeSet();
-	public RegistrationPeriod getCurrRegPeriod() {
-		return regPeriods.last();
-	}
-	public void validateRegPeriod() {
-		RegistrationPeriod latestRegPeriod=null;
+
+	public RegistrationPeriod validateRegPeriod() {
 		LocalDateTime now=LocalDateTime.now();
-		while(!regPeriods.isEmpty()) {
-			latestRegPeriod=regPeriods.last();
-			if(latestRegPeriod.getCloseTime().isBefore(now))
-				regPeriods.pollLast();
-			else break;
-		}
+		RegistrationPeriod latestRegPeriod=regPeriodRepo.getLastPeriod(now);
 		if(latestRegPeriod==null) throw new RequestException("The time for registration, adjustment, and review of the course has ended.");
 		else if(latestRegPeriod.getOpenTime().isAfter(now)) throw new RequestException("The registration period hasn't been opened. Please visit at "+latestRegPeriod.getOpenTime()+"!");
-	}
-	public void update() {
-		regPeriods.clear();
-		LocalDateTime now=LocalDateTime.now();
-		for(RegistrationPeriod regPeriod: regPeriodRepo.findAll()) {
-			if(!regPeriod.getCloseTime().isBefore(now)) {
-				regPeriods.add(regPeriod);
-			}
-		}
+		return latestRegPeriod;
 	}
 }

@@ -36,16 +36,16 @@ public class StudentController {
 	@PostMapping("/enrollCourse")
 	public ResponseEntity<Map<String,String>> enrollCourses(
 			@RequestParam("courseIds") String courseIdsJson) throws Exception{
-		openingRegPeriods.validateRegPeriod();
+		var currRegPeriod=openingRegPeriods.validateRegPeriod();
 		List<Integer> courseIds = objectMapper.readValue(courseIdsJson, new TypeReference<List<Integer>>(){});
-		return ResponseEntity.ok(studentService.enrollCourses(courseIds));
+		return ResponseEntity.ok(studentService.enrollCourses(courseIds, currRegPeriod));
 	}
 	@PostMapping("/unenrollCourse")
 	public ResponseEntity<Map<String,String>> unenrollCourses(
 			@RequestParam("courseIds") String courseIdsJson) throws Exception{
-		openingRegPeriods.validateRegPeriod();
+		var currRegPeriod=openingRegPeriods.validateRegPeriod();
 		List<Integer> courseIds = objectMapper.readValue(courseIdsJson, new TypeReference<List<Integer>>(){});
-		return ResponseEntity.ok(studentService.unenrollCourses(courseIds));
+		return ResponseEntity.ok(studentService.unenrollCourses(courseIds,currRegPeriod));
 	}
 	@GetMapping("/studentInfo")
 	public ResponseEntity<StudentDTO> getStudentInfo(){

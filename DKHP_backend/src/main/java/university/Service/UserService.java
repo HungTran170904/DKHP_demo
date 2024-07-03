@@ -31,6 +31,7 @@ public class UserService {
 	InfoChecking infoChecking;
 	@Autowired
 	PasswordEncoder encoder;
+
 	public LoginDTO login(String username, String password) {
 		Authentication authentication = authManager.authenticate(
 				new UsernamePasswordAuthenticationToken(username,password));

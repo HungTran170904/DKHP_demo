@@ -1,5 +1,6 @@
 package university.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import university.Model.RegistrationPeriod;
 import university.Repository.CourseRepo;
+import university.Repository.RegistrationPeriodRepo;
 import university.Util.OpeningRegPeriods;
 
 @Service
@@ -23,12 +26,13 @@ public class SseService {
 	@Autowired
 	CourseRepo courseRepo;
 	@Autowired
-	OpeningRegPeriods openingRegPeriods;
-	@Autowired
 	ExecutorService sseExecutor;
 	@Autowired
 	Set<SseEmitter> emitters;
+	@Autowired
+	RegistrationPeriodRepo regPeriodRepo;
 	private final Logger LOGGER=LoggerFactory.getLogger(SseService.class);
+
 	public SseEmitter addEmitter() {
 		System.out.println("A connection is received");
 		var emitter=new SseEmitter(24*60*60*60*1000L);
@@ -41,7 +45,9 @@ public class SseService {
 	}
 	public Map<Integer,Integer> getUpdatedRegNumbers(){
 		Map<Integer,Integer> regNumbers=new HashMap();
-		List<Object[]> results=courseRepo.getUpdatedRegNum(openingRegPeriods.getCurrRegPeriod().getSemester());
+		var currRegperiod=regPeriodRepo.getCurrRegPeriod(LocalDateTime.now());
+		if(currRegperiod==null) return null;
+		List<Object[]> results=courseRepo.getUpdatedRegNum(currRegperiod.getSemester());
 		for (Object[] result : results) {
 			   regNumbers.put((Integer) result[0], (Integer) result[1]);
 		}
@@ -52,10 +58,11 @@ public class SseService {
 			try {
 				while(true) {
 					if(!emitters.isEmpty()) {
-						System.out.println("Send events");
 						CompletableFuture.supplyAsync(()->{
+							System.out.println("Send event");
 							return getUpdatedRegNumbers();
 						}).thenAccept(result->{
+							if(result==null) return;
 							var deletedEmitters=new ArrayList<SseEmitter>();
 							for(var emitter: emitters) {
 								try {

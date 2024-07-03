@@ -43,6 +43,7 @@ public class AdminService {
 	RegistrationPeriodRepo regPeriodRepo;
 	@Autowired
 	PasswordEncoder encoder;
+
 	public RegistrationPeriod addRegPeriod(RegistrationPeriod dto) {
 		Optional<Semester> semester=semesterRepo.findById(dto.getSemester().getId());
 		if(semester.isEmpty()) throw new RequestException("SemesterId "+dto.getSemester().getId()+" does not exist");
@@ -61,14 +62,12 @@ public class AdminService {
 		regPeriod.setOpenTime(openTime);
 		regPeriod.setCloseTime(closeTime);
 		RegistrationPeriod savedRegPeriod=regPeriodRepo.save(regPeriod);
-		openingRegPeriods.update();
 		return savedRegPeriod;
 	}
 	public void removeRegPeriod(int regPeriodId) {
 		RegistrationPeriod regPeriod=regPeriodRepo.findById(regPeriodId)
 				.orElseThrow(()->new RequestException("RegPeriodId "+regPeriodId+" does not exist"));
 		regPeriodRepo.delete(regPeriod);
-		openingRegPeriods.update();
 	}
 	public RegistrationPeriod updateRegPeriod(RegistrationPeriod dto) {
 		if(dto==null||dto.getOpenTime()==null||dto.getCloseTime()==null||dto.getSemester()==null)
@@ -84,7 +83,6 @@ public class AdminService {
 		regPeriod.setCloseTime(dto.getCloseTime());
 		regPeriod.setSemester(dto.getSemester());
 		RegistrationPeriod savedRegPeriod= regPeriodRepo.save(regPeriod);
-		openingRegPeriods.update();
 		return savedRegPeriod;
 	}
 	public List<RegistrationPeriod> getRegPeriods(){

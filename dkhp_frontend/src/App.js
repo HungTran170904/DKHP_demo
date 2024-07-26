@@ -5,7 +5,7 @@ import AdminRouter from './Router/AdminRouter';
 import { SnackbarProvider } from 'notistack';
 import Login from './Page/Login';
 import ProtectedRouter from './Router/ProtectedRouter';
-import { API_ENDPOINT } from './Util/Constraint.js';
+
 function App() {
     return (
       <BrowserRouter>

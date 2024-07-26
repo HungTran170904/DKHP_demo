@@ -1,0 +1,32 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: dkhp-demo
+  name: backend-prometheus-rule
+spec:
+  groups:
+  - name: "backend-alert"
+    rules:
+    - alert: BackendDown
+      for: 1m 
+      expr: up{ job="backend"}==0
+      labels:
+        severity: "critical"
+      annotations:
+        summary: "Backend Server {{.instance}} was down"
+        description: "Backend Server {{.instance}} was down"
+    - alert: 'the number of http requests exceeds 100'
+      expr: http_server_requests_active_seconds_active_count > 100
+      for: 10s
+      labels:
+        severity: "critical"
+      annotations:
+        summary: "High number of HTTP requests to backend server:{{.instance}}"
+        description: "High number of HTTP requests to backend server:{{.instance}}"
+  - name: "backend-record"
+    rules:
+      - record: http_request_duration_sum
+        expr: sum(http_server_requests_active_seconds_active_count)
+      - record: jvm_used_bytes_sum_percentage
+        expr: sum(jvm_memory_used_bytes)/sum(jvm_memory_max_bytes)*100

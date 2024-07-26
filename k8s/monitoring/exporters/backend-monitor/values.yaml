@@ -1,0 +1,14 @@
+additionalAnnotations: {}
+
+serviceMonitor:
+  enabled: true
+  additionalLabels: 
+    prometheus: dkhp-demo
+  port: http
+  interval:  30s
+  scrapeTimeout: 30s
+  path: /actuator/prometheus
+  namespaceSelector:
+   - default
+  selectorLabels:
+    app.kubernetes.io/name: backend

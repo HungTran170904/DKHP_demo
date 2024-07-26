@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: dkhp-demo
+  name: mysql-prometheus-rule
+spec:
+  groups:
+  - name: "mysql-alert"
+    rules:
+    - alert: MysqlDown
+      for: 1m 
+      expr: mysql_up==0
+      labels:
+        severity: "critical"
+      annotations:
+        message: MySQL Database is down!!!
+  - name: "mysql-record"
+    rules:
+      - record: mysql_connections_error_sum
+        expr: sum(mysql_global_status_connection_errors_total)
+      - record: mysql_sent_received_rate
+        expr: sum(mysql_global_status_bytes_sent)/sum(mysql_global_status_bytes_received)

@@ -14,18 +14,6 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-rbac:
-  create: false
-  annotations: {}
-  role:
-    resources: ["pods", "services"]
-    verbs: ["get", "list", "watch"]
-  rolebinding:
-    subjects:
-      - kind: ServiceAccount
-        name: mysql-exporter
-        namespace: monitoring
-
 serviceAccount:
   create: false
 

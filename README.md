@@ -1,4 +1,4 @@
-# MeetingTeam App
+# Course Registration App
 
 Building a course registration website using ReactJS and Spring boot. This build covers basic funtionalities of a course registration application such as register new courses, cancel enrolled courses, allow admin to add new courses
 

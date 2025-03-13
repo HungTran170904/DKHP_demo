@@ -29,14 +29,12 @@ import university.Util.OpeningRegPeriods;
 @Service
 @RequiredArgsConstructor
 public class AdminService {
-	private final OpeningRegPeriods openingRegPeriods;
 	private final SemesterRepo semesterRepo;
-	private final StudentRepo studentRepo;
 	private final UserRepo userRepo;
 	private final RoleRepo roleRepo;
 	private final UserConverter userConverter;
-	private RegistrationPeriodRepo regPeriodRepo;
-	private PasswordEncoder encoder;
+	private final RegistrationPeriodRepo regPeriodRepo;
+	private final PasswordEncoder encoder;
 
 	public RegistrationPeriod addRegPeriod(RegistrationPeriod dto) {
 		Optional<Semester> semester=semesterRepo.findById(dto.getSemester().getId());
@@ -64,6 +62,7 @@ public class AdminService {
 				.orElseThrow(()->new RequestException("RegPeriodId "+regPeriodId+" does not exist"));
 		regPeriodRepo.delete(regPeriod);
 	}
+
 	public RegistrationPeriod updateRegPeriod(RegistrationPeriod dto) {
 		if(dto==null||dto.getOpenTime()==null||dto.getCloseTime()==null||dto.getSemester()==null)
 			throw new RequestException("All attributes of updatedRegPeriod are required");

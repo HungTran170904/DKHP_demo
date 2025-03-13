@@ -49,6 +49,7 @@ const StudentPage=()=>{
                               setShow(0);
                     })
                     .catch(err=>{
+                            console.log("Err".err);
                               if(err.response.status==400){
                                         config.variant="error";
                                         enqueueSnackbar(err.response.data, config);

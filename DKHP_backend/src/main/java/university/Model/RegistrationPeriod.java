@@ -21,13 +21,17 @@ import lombok.NoArgsConstructor;
 public class RegistrationPeriod implements Comparable<RegistrationPeriod>{
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime openTime;
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime closeTime;
+
 	@ManyToOne
 	@JoinColumn(name="semesterId")
 	private Semester semester;
+
 	@Override
 	public int compareTo(RegistrationPeriod o) {
 		if(this.getOpenTime().isBefore(o.getOpenTime())) return 1;

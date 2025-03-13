@@ -15,13 +15,16 @@ public interface RegistrationRepo extends JpaRepository<Registration,Registratio
 	@Query(value="insert into registration(student_id, course_id) values(?1,?2)", nativeQuery=true)
 	@Modifying
     @Transactional
-	public void addCourse(int studentId, int courseId);
+	void addCourse(int studentId, int courseId);
+
 	@Query(value="delete from registration where student_id=?1 and course_id=?2", nativeQuery=true)
 	@Modifying
     @Transactional
-	public void removeCourse(int studentId, int courseId);
+	void removeCourse(int studentId, int courseId);
+
 	@Query("select reg.result from Registration reg where reg.student.id=?1 and reg.course.id=?2")
-	public boolean getResult(int studentId, int courseId);
+	boolean getResult(int studentId, int courseId);
+
 	@Query("select reg from Registration reg where reg.student.id=?1 and reg.course.subject.id=?2")
-	public Registration findByStudentAndSubject(int studentId, int subjectId);
+	Registration findByStudentAndSubject(int studentId, int subjectId);
 }

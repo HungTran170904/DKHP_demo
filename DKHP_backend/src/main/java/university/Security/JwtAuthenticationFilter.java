@@ -21,6 +21,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	JwtProvider jwtProvider;
 	@Autowired
 	CustomUserDetailsService customUserDetailsService;
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
@@ -39,5 +40,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 		}
 		chain.doFilter(request, response);
 	}
-
 }

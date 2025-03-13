@@ -3,6 +3,7 @@ package university.Controller;
 import java.util.List;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,13 +27,12 @@ import university.Util.OpeningRegPeriods;
 
 @RestController
 @RequestMapping("/api/student")
-@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class StudentController {
-	@Autowired
-	StudentService studentService;
-	@Autowired
-	OpeningRegPeriods openingRegPeriods;
-	ObjectMapper objectMapper=new ObjectMapper();
+	private final StudentService studentService;
+	private final OpeningRegPeriods openingRegPeriods;
+	private final ObjectMapper objectMapper=new ObjectMapper();
+
 	@PostMapping("/enrollCourse")
 	public ResponseEntity<Map<String,String>> enrollCourses(
 			@RequestParam("courseIds") String courseIdsJson) throws Exception{
@@ -40,6 +40,7 @@ public class StudentController {
 		List<Integer> courseIds = objectMapper.readValue(courseIdsJson, new TypeReference<List<Integer>>(){});
 		return ResponseEntity.ok(studentService.enrollCourses(courseIds, currRegPeriod));
 	}
+
 	@PostMapping("/unenrollCourse")
 	public ResponseEntity<Map<String,String>> unenrollCourses(
 			@RequestParam("courseIds") String courseIdsJson) throws Exception{
@@ -47,19 +48,23 @@ public class StudentController {
 		List<Integer> courseIds = objectMapper.readValue(courseIdsJson, new TypeReference<List<Integer>>(){});
 		return ResponseEntity.ok(studentService.unenrollCourses(courseIds,currRegPeriod));
 	}
+
 	@GetMapping("/studentInfo")
 	public ResponseEntity<StudentDTO> getStudentInfo(){
 		return ResponseEntity.ok(studentService.getStudentInfo());
 	}
+
 	@GetMapping("/admin/getAllStudents")
 	public ResponseEntity<List<StudentDTO>> getAllStudents(){
 		return ResponseEntity.ok(studentService.getAllStudents());
 	}
+
 	@PostMapping("/admin/addStudent")
 	public ResponseEntity<StudentDTO> addStudent(
 			@RequestBody StudentDTO dto){
 		return ResponseEntity.ok(studentService.addStudent(dto));
 	}
+
 	@DeleteMapping("/admin/removeStudent/{id}")
 	public ResponseEntity<HttpStatus> removeStudent(
 			@PathVariable("id") int id){

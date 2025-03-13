@@ -24,7 +24,9 @@ public class Role {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+
 	private String roleName;
+
 	@OneToMany(mappedBy="role")
 	private List<User> users;
 }

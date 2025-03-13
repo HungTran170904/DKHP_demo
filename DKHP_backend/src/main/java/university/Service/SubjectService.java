@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,17 +21,17 @@ import university.Repository.SubjectRepo;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class SubjectService {
-	@Autowired
-	private SubjectRepo subjectRepo;
-	@Autowired
-	private SubjectConverter subjectConverter;
+	private final SubjectRepo subjectRepo;
+	private final SubjectConverter subjectConverter;
 
 	public List<SubjectDTO> getAllSubjects(){
 		List<Subject> subjects=subjectRepo.getAll();
 		List<SubjectDTO> subjectDTOs=subjectConverter.convertToAllDependencies(subjects);
 		return subjectDTOs;
 	}
+
 	@Transactional
 	public SubjectDTO addSubject(SubjectDTO dto) {
 		SubjectDTO subjectDTO=null;
@@ -54,6 +55,7 @@ public class SubjectService {
 		subjectDTO= subjectConverter.convertToAllDependency(saveSubject);
 		return subjectDTO;
 	}
+
 	public void removeSubject(int subjectId) {
 		Optional<Subject> s=subjectRepo.findById(subjectId);
 		if(s.isEmpty()) throw new RequestException("Subject id"+subjectId+" not found!Please try again"); 

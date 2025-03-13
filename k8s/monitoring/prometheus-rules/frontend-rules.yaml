@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: dkhp-demo
+  name: frontend-prometheus-rule
+spec:
+  groups:
+  - name: "frontend-alert"
+    rules:
+    - alert: NginxDown
+      for: 1m 
+      expr: up{ job="prometheus-nginx-exporter"}==0
+      labels:
+        severity: "critical"
+      annotations:
+        summary: "Nginx Server {{.instance}} was down"
+        description: "Nginx Server {{.instance}} was down"
+      

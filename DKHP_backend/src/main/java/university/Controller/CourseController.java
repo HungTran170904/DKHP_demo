@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,32 +36,32 @@ import university.Util.OpeningRegPeriods;
 
 @RestController
 @RequestMapping("/api/courses")
-@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class CourseController {
-	@Autowired
-	CourseService courseService;
-	@Autowired
-	OpeningRegPeriods openingRegPeriods;
-	@Autowired
-	SseService sseService;
+	private final CourseService courseService;
+	private final OpeningRegPeriods openingRegPeriods;
+	private final SseService sseService;
 
 	@GetMapping("/admin/all")
 	public ResponseEntity<List<CourseDTO>> getAllCourses() {
 		List<CourseDTO> courses=courseService.getAllCourses();
 		return new ResponseEntity(courses, HttpStatus.OK);
 	}
+
 	@GetMapping("/openedCourses")
 	public ResponseEntity<List<CourseDTO>> getOpenedCourses() {
 		var currRegPeriod=openingRegPeriods.validateRegPeriod();
 		List<CourseDTO> courses=courseService.getOpenedCourses(currRegPeriod);
 		return new ResponseEntity(courses, HttpStatus.OK);
 	}
+
 	@GetMapping("/enrolledCourses")
 	public ResponseEntity<List<Integer>> getEnrolledCourses() {
 		var currRegPeriod=openingRegPeriods.validateRegPeriod();
 		List<Integer> courseIds=courseService.getEnrolledCourses(currRegPeriod);
 		return new ResponseEntity(courseIds, HttpStatus.OK);
 	}
+
 	@GetMapping("/studiedCourses")
 	public ResponseEntity<List<CourseDTO>> getStudiedCourses(
 			@RequestParam(value="semesterId") int semesterId,
@@ -69,16 +70,19 @@ public class CourseController {
 		List<CourseDTO> courses=courseService.getStudiedCourses(semesterId);
 		return new ResponseEntity(courses, HttpStatus.OK);
 	}
+
 	@PostMapping("/admin/addCourse")
 	public ResponseEntity<CourseDTO> addCourse(
 			@RequestBody CourseDTO dto){
 		return ResponseEntity.ok(courseService.addCourse(dto));
 	}
+
 	@DeleteMapping("/admin/removeCourse/{id}")
 	public ResponseEntity<String> removeCourse(
 			@PathVariable("id") int id){
 		return ResponseEntity.ok(courseService.removeCourse(id));
 	}
+
 	@GetMapping("/updateRegNumbers")
 	public SseEmitter streamRegNumbers(){
 		return sseService.addEmitter();

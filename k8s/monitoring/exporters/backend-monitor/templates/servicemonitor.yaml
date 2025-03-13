@@ -1,0 +1,35 @@
+---
+{{- if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "backend-monitor.fullname" .  }}
+  namespace: {{ template "backend-monitor.namespace" . }}
+  {{- with .Values.additionalAnnotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "backend-monitor.labels" . | nindent 4 }}
+  {{- if .Values.serviceMonitor.additionalLabels }}
+    {{- toYaml .Values.serviceMonitor.additionalLabels | nindent 4 }}
+  {{- end }}
+spec:
+  jobLabel: {{ template "backend-monitor.name" . }}
+  endpoints:
+    - port: {{ .Values.serviceMonitor.port }}
+    {{- if .Values.serviceMonitor.interval }}
+      interval: {{ .Values.serviceMonitor.interval }}
+    {{- end }}
+    {{- if .Values.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+    {{- end }}
+      path: {{ .Values.serviceMonitor.path }}
+  {{- if .Values.serviceMonitor.namespaceSelector }}
+  namespaceSelector:
+    matchNames:
+      {{- toYaml .Values.serviceMonitor.namespaceSelector | nindent 6 }}
+  {{- end}}
+  selector:
+    matchLabels:
+      {{- toYaml .Values.serviceMonitor.selectorLabels | nindent 6 }}
+{{- end }}

@@ -18,31 +18,31 @@ import university.Model.SubjectRelation;
 @Repository
 public interface SubjectRepo extends JpaRepository<Subject,Integer> {
 	@Query("select s from Subject s left join fetch s.relations")
-	public List<Subject> getAll();
+	List<Subject> getAll();
 	
 	@Query("select sr from SubjectRelation sr where sr.currSubject.id=?1")
-	public List<SubjectRelation> getPreSRs(int subjectId);
+	List<SubjectRelation> getPreSRs(int subjectId);
 	
 	@Query(value="insert into subject_relation(pre_subject_id, curr_subject_id, type) values(?1,?2,?3)", nativeQuery=true)
 	@Modifying
     @Transactional
-	public void savePreSR(Integer preSubjectId, Integer currSubjectId, Integer type);
+	void savePreSR(Integer preSubjectId, Integer currSubjectId, Integer type);
 	
 	@Query("select s.id from Subject s where s.subjectId=?1")
-	public Integer getIdBySubjectId(String subjectId);
+	Integer getIdBySubjectId(String subjectId);
 	
-	public Optional<Subject> findBySubjectId(String subjectId);
+	Optional<Subject> findBySubjectId(String subjectId);
 	
 	@Query(value="select c.subject.id from Course c where c.mainCourse=null and c.semester!=?1 and c IN( select reg.course from Registration reg where reg.student.id=?2)")
-	public Set<Integer> getStudiedSubjectIds(Semester semester,int studentId);
+	Set<Integer> getStudiedSubjectIds(Semester semester,int studentId);
 	
 	@Query(value="select c.subject.id from Course c where c.mainCourse=null and c.semester.id=?1 and c IN( select reg.course from Registration reg where reg.student.id=?2)")
-	public Set<Integer> getEnrolledSubjectIds(int semesterId,int studentId);
+	Set<Integer> getEnrolledSubjectIds(int semesterId,int studentId);
 	
-	public boolean existsBySubjectId(String subjectId);
+	boolean existsBySubjectId(String subjectId);
 	
 	@Query("delete from SubjectRelation sr where sr.currSubject=?1")
 	@Modifying
     @Transactional
-	public void deletePreSRs(Subject s);
+	void deletePreSRs(Subject s);
 }

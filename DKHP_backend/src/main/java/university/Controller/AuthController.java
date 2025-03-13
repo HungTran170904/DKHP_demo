@@ -1,5 +1,6 @@
 package university.Controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,10 @@ import university.Service.UserService;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class AuthController {
-	@Autowired
-	UserService userService;
+	private final UserService userService;
+
 	@PostMapping("/login")
 	public ResponseEntity<LoginDTO> login(
 			@RequestParam("username") String username,
@@ -27,6 +28,7 @@ public class AuthController {
 			){
 		return ResponseEntity.ok(userService.login(username, password));
 	}
+
 	@PostMapping("/changePassword")
 	public ResponseEntity<HttpStatus> changePassword(
 			@RequestParam("username") String username,

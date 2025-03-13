@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class SubjectRelationDTO {
-	Integer id;
-	String subjectId;
-	Integer type; 
+	private Integer id;
+	private String subjectId;
+	private Integer type;
 }

@@ -30,12 +30,17 @@ import lombok.ToString;
 public class User {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+
 	@Column(nullable=false, unique=true)
 	private String email;
+
 	private String userId;
+
 	private String name;
+
 	private String password;
+
 	@ManyToOne
 	@JoinColumn(nullable=false)
-	private Role role; //student or admin
+	private Role role;
 }

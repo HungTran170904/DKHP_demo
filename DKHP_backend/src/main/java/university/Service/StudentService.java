@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -37,25 +38,17 @@ import university.Util.OpeningRegPeriods;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class StudentService {
-	@Autowired
-	CourseRepo courseRepo;
-	@Autowired
-	SubjectRepo subjectRepo;
-	@Autowired
-	RegistrationRepo regRepo;
-	@Autowired
-	StudentRepo studentRepo;
-	@Autowired
-	UserRepo userRepo;
-	@Autowired
-	RoleRepo roleRepo;
-	@Autowired
-	InfoChecking infoChecking;
-	@Autowired
-	StudentConverter studentConverter;
-	@Autowired
-	PasswordEncoder encoder;
+	private final CourseRepo courseRepo;
+	private final SubjectRepo subjectRepo;
+	private final RegistrationRepo regRepo;
+	private final StudentRepo studentRepo;
+	private final UserRepo userRepo;
+	private final RoleRepo roleRepo;
+	private final InfoChecking infoChecking;
+	private final StudentConverter studentConverter;
+	private final PasswordEncoder encoder;
 
 	private List<Course> getUnenrolledCourses(List<Integer> courseIds,Map<String,String> result){
 		List<Course> unenrolledCourses=new LinkedList();
@@ -112,6 +105,7 @@ public class StudentService {
 			return "Course " + c.getCourseId() + " overlap the schedule with the course " + c1.getCourseId();
 		return null;
 	}
+
 	private String checkBySchedule(Course c, Course c1) {
 		String str=null;
 		str=checkByScheduleChild(c,c1);
@@ -124,6 +118,7 @@ public class StudentService {
 		}
 		return str;
 	}
+
 	private String checkByUnenrolledCourses(List<Course> unenrolledCourses,Course c) {
 		String str=null;
 		for(Course c1:unenrolledCourses) {
@@ -134,6 +129,7 @@ public class StudentService {
 		}
 		return str;
 	}
+
 	private String checkByEnrolledCourses(List<Course> enrolledCourses,Course c) {
 		String str=null;
 		for(Course c1: enrolledCourses) {
@@ -145,6 +141,7 @@ public class StudentService {
 		}
 		return str;
 	}
+
 	private String checkByStudiedCourses(Set<Integer> studiedSubjectIds, Course c, Integer studentId) {
 		List<SubjectRelation> relations=subjectRepo.getPreSRs(c.getSubject().getId());
 		for(SubjectRelation sr: relations) {
@@ -159,6 +156,7 @@ public class StudentService {
 		}
 		return null;
 	}
+
 	private String checkFull(Course c) {
 		if(c.getRegisteredNumber()==c.getTotalNumber()) 
 			return "The course "+c.getCourseId()+" is full now";
@@ -168,6 +166,7 @@ public class StudentService {
 			return "The course "+c.getMainCourse().getCourseId()+" is full now";
 		return null;
 	}
+
 	public int getStudentIdFromSecurityContext() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(auth==null) throw new BadCredentialsException("You need to login before register courses!");
@@ -175,6 +174,7 @@ public class StudentService {
 		int userId= Integer.valueOf(userDetails.getUsername());
 		return studentRepo.findStudentIdByUserId(userId);
 	}
+
 	public Map<String,String> enrollCourses(List<Integer> courseIds, RegistrationPeriod currRegPeriod){
 		int studentId=getStudentIdFromSecurityContext();
 		Map<String,String> result=new HashMap();
@@ -204,6 +204,7 @@ public class StudentService {
 		}
 		return result;
 	}
+
 	public Map<String,String> unenrollCourses(List<Integer> courseIds, RegistrationPeriod currRegPeriod){
 		int studentId=getStudentIdFromSecurityContext();
 		Map<String,String> result=new HashMap();
@@ -239,6 +240,7 @@ public class StudentService {
 		}
 		return result;
 	}
+
 	public StudentDTO getStudentInfo() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(auth==null) throw new BadCredentialsException("You need to login before register courses!");
@@ -246,6 +248,7 @@ public class StudentService {
 		Student s= studentRepo.findByUser(userDetails.getU()).orElseThrow(()->new RequestException("Student not found!Please try again"));
 		return studentConverter.convertToStudentDTO(s);
 	}
+
 	public StudentDTO addStudent(StudentDTO dto) {
 		if(dto.getUser()==null||dto.getUser().getEmail()==null||dto.getUser().getUserId()==null)
 			throw new RequestException("UserId and Email fields are required");
@@ -263,11 +266,13 @@ public class StudentService {
 		if(saveStudent!=null) response=studentConverter.convertToStudentDTO(saveStudent);
 		return response;
 	}
+
 	public void removeStudent(Integer studentId) {
 		Optional<Student> s=studentRepo.findById(studentId);
 		if(s.isEmpty()) throw new RequestException("Student id"+studentId+" not found!Please try again"); 
 		studentRepo.delete(s.get());
 	}
+
 	public List<StudentDTO> getAllStudents(){
 		List<StudentDTO> dtos=new ArrayList();
 		for(Student s: studentRepo.findAll()) {

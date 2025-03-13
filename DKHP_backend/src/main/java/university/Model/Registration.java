@@ -19,17 +19,19 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table
 @Data
 @NoArgsConstructor
 public class Registration {
 	@EmbeddedId
 	private RegistrationKey id;
+
 	@ManyToOne(fetch=FetchType.LAZY)
 	@MapsId("studentId")
 	private Student student;
+
 	@ManyToOne(fetch=FetchType.LAZY)
 	@MapsId("courseId")
 	private Course course;
-	private Boolean result; //true: passed, false: failed
+
+	private Boolean result;
 }

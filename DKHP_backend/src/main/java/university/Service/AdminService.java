@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,23 +27,16 @@ import university.Repository.UserRepo;
 import university.Util.OpeningRegPeriods;
 
 @Service
+@RequiredArgsConstructor
 public class AdminService {
-	@Autowired
-	OpeningRegPeriods openingRegPeriods;
-	@Autowired
-	SemesterRepo semesterRepo;
-	@Autowired
-	StudentRepo studentRepo;
-	@Autowired
-	UserRepo userRepo;
-	@Autowired
-	RoleRepo roleRepo;
-	@Autowired
-	UserConverter userConverter;
-	@Autowired
-	RegistrationPeriodRepo regPeriodRepo;
-	@Autowired
-	PasswordEncoder encoder;
+	private final OpeningRegPeriods openingRegPeriods;
+	private final SemesterRepo semesterRepo;
+	private final StudentRepo studentRepo;
+	private final UserRepo userRepo;
+	private final RoleRepo roleRepo;
+	private final UserConverter userConverter;
+	private RegistrationPeriodRepo regPeriodRepo;
+	private PasswordEncoder encoder;
 
 	public RegistrationPeriod addRegPeriod(RegistrationPeriod dto) {
 		Optional<Semester> semester=semesterRepo.findById(dto.getSemester().getId());
@@ -64,6 +58,7 @@ public class AdminService {
 		RegistrationPeriod savedRegPeriod=regPeriodRepo.save(regPeriod);
 		return savedRegPeriod;
 	}
+
 	public void removeRegPeriod(int regPeriodId) {
 		RegistrationPeriod regPeriod=regPeriodRepo.findById(regPeriodId)
 				.orElseThrow(()->new RequestException("RegPeriodId "+regPeriodId+" does not exist"));
@@ -85,6 +80,7 @@ public class AdminService {
 		RegistrationPeriod savedRegPeriod= regPeriodRepo.save(regPeriod);
 		return savedRegPeriod;
 	}
+
 	public List<RegistrationPeriod> getRegPeriods(){
 		return regPeriodRepo.getAllRegPeriods();
 	}
@@ -101,6 +97,7 @@ public class AdminService {
 		if(saveAdmin!=null) response=userConverter.convertToUserDTO(saveAdmin);
 		return response;
 	}
+
 	public Semester addSemester(int semesterNum, int year) {
 		Semester semester=new Semester();
 		if(semesterNum<1||semesterNum>3) throw new RequestException("Semester number must be between 1 and 3");
@@ -109,11 +106,13 @@ public class AdminService {
 		Semester saveSemester=semesterRepo.save(semester);
 		return saveSemester;
 	}
+
 	public void removeSemester(int semesterId) {
 		Optional<Semester> se=semesterRepo.findById(semesterId);
 		if(se.isEmpty()) throw new RequestException("Semester id"+semesterId+" not found!Please try again"); 
 		semesterRepo.deleteById(semesterId);
 	}
+
 	public List<Semester> getLatestSemesters() {
 		List<Semester> semesters= new ArrayList();
 		LocalDate now=LocalDate.now();
@@ -122,6 +121,7 @@ public class AdminService {
 		}
 		return semesters;
 	}
+
 	public List<Semester> getAllSemesters() {
 		return semesterRepo.findAll();
 	}

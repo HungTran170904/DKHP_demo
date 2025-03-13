@@ -13,25 +13,22 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
-@Table
-@Getter
-@Setter
 @NoArgsConstructor
-@ToString
+@Data
 public class SubjectRelation {
 	@EmbeddedId
 	private SubjectRelationKey id=new SubjectRelationKey();
+
 	@ManyToOne
 	@MapsId("currSubjectId")
 	private Subject currSubject;
+
 	@ManyToOne
 	@MapsId("preSubjectId")
 	private Subject preSubject;
+
 	private Integer type; //1:prerequisite subject, 2: ahead subject
 }

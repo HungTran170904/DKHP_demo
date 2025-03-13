@@ -2,8 +2,8 @@ package university.Service;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,23 +17,17 @@ import university.Exception.RequestException;
 import university.Model.*;
 import university.Repository.*;
 import university.Util.InfoChecking;
-import university.Util.OpeningRegPeriods;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class CourseService {
-	@Autowired
-	CourseRepo courseRepo;
-	@Autowired
-	StudentRepo studentRepo;
-	@Autowired
-	SubjectRepo subjectRepo;
-	@Autowired
-	SemesterRepo semesterRepo;
-	@Autowired
-	CourseConverter courseConverter;
-	@Autowired
-	InfoChecking infoChecking;
+	private final CourseRepo courseRepo;
+	private final StudentRepo studentRepo;
+	private final SubjectRepo subjectRepo;
+	private final SemesterRepo semesterRepo;
+	private final CourseConverter courseConverter;
+	private final InfoChecking infoChecking;
 	
 	public int getStudentIdFromSecurityContext() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -42,23 +36,28 @@ public class CourseService {
 		int userId= Integer.valueOf(userDetails.getUsername());
 		return studentRepo.findStudentIdByUserId(userId);
 	}
+
 	public List<CourseDTO> getAllCourses(){
 		return courseConverter.convertToDTO(courseRepo.findAll());
 	}
+
 	public List<CourseDTO> getOpenedCourses(RegistrationPeriod currRegPeriod){
 		List<Course> courses=courseRepo.findOpenedCourses(currRegPeriod.getSemester());
 		return courseConverter.convertToDTO(courses);
 	}
+
 	public List<Integer> getEnrolledCourses(RegistrationPeriod currRegPeriod){
 		int studentId=getStudentIdFromSecurityContext();
 		List<Integer> courseIds=courseRepo.findEnrolledCourseIds(currRegPeriod.getSemester(),studentId);
 		return courseIds;
 	}
+
 	public List<CourseDTO> getStudiedCourses(int semesterId){
 		int studentId=getStudentIdFromSecurityContext();
 		List<Course> courses=courseRepo.findEnrolledCourses(semesterId,studentId);
 			return courseConverter.convertToDTO(courses);
 	}
+
 	public CourseDTO addCourse(CourseDTO dto) {
 		if(dto.getCourseId()==null) throw new RequestException("CourseId is required");
 		if(courseRepo.existsByCourseId(dto.getCourseId()))
@@ -80,6 +79,7 @@ public class CourseService {
 		Course savedCourse=courseRepo.save(c);
 		return courseConverter.convertToDTO(savedCourse);
 	}
+
 	public String removeCourse(Integer courseId) {
 		var c=courseRepo.findById(courseId).orElseThrow(()->new RequestException("CourseId "+courseId+" does not exist!"));
 		if(c.getMainCourse()==null&&courseRepo.existsByMainCourse(c))

@@ -2,6 +2,7 @@ package university.Controller;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,19 +22,21 @@ import university.Service.SubjectService;
 
 @RestController
 @RequestMapping("/api/subject/admin")
-@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class SubjectController {
-	@Autowired
-	SubjectService subjectService;
+	private final SubjectService subjectService;
+
 	@GetMapping("/getAllSubjects")
 	public ResponseEntity<List<SubjectDTO>> getAllSubject() {
 		return ResponseEntity.ok(subjectService.getAllSubjects());
 	}
+
 	@PostMapping("/addSubject")
 	public ResponseEntity<SubjectDTO> addSubject(
 			@RequestBody SubjectDTO dto) {
 		return ResponseEntity.ok(subjectService.addSubject(dto));
 	}
+
 	@DeleteMapping("/removeSubject/{id}")
 	public ResponseEntity<HttpStatus> removeSubject(
 			@PathVariable("id") int id){

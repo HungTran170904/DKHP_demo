@@ -13,6 +13,7 @@ import university.Model.User;
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails{
 	User u;
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_"+u.getRole().getRoleName());

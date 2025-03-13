@@ -15,8 +15,8 @@ import university.Model.User;
 
 @Repository
 public interface StudentRepo extends JpaRepository<Student, Integer>{
-	public Optional<Student> findByUser(User u);
+	Optional<Student> findByUser(User u);
 	
 	@Query(value="select id from student where user_id=?1", nativeQuery=true)
-	public int findStudentIdByUserId(int userId);
+	int findStudentIdByUserId(int userId);
 }

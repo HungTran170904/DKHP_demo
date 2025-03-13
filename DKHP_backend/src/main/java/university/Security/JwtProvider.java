@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
 @Component
 public class JwtProvider {
 	public String generateToken(Authentication auth) {
@@ -24,6 +25,7 @@ public class JwtProvider {
 				.compact();
 		return JwtConfig.prefix+token;
 	}
+
 	public String getIdFromToken(String token) {
 		try {
 			Claims claims = Jwts.parserBuilder()
@@ -36,6 +38,7 @@ public class JwtProvider {
 			throw new AuthenticationCredentialsNotFoundException("JWT was exprired or incorrect",ex.fillInStackTrace());
 		}
 	}
+
 	public boolean validateToken(String token) {
 		try {
 			Jwts.parserBuilder()

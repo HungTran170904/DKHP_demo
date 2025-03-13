@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +23,12 @@ import university.Repository.RegistrationPeriodRepo;
 import university.Util.OpeningRegPeriods;
 
 @Service
+@RequiredArgsConstructor
 public class SseService {
-	@Autowired
-	CourseRepo courseRepo;
-	@Autowired
-	ExecutorService sseExecutor;
-	@Autowired
-	Set<SseEmitter> emitters;
-	@Autowired
-	RegistrationPeriodRepo regPeriodRepo;
+	private final CourseRepo courseRepo;
+	private final ExecutorService sseExecutor;
+	private final Set<SseEmitter> emitters;
+	private final RegistrationPeriodRepo regPeriodRepo;
 	private final Logger LOGGER=LoggerFactory.getLogger(SseService.class);
 
 	public SseEmitter addEmitter() {
@@ -43,6 +41,7 @@ public class SseService {
 		emitters.add(emitter);
 		return emitter;
 	}
+
 	public Map<Integer,Integer> getUpdatedRegNumbers(){
 		Map<Integer,Integer> regNumbers=new HashMap();
 		var currRegperiod=regPeriodRepo.getCurrRegPeriod(LocalDateTime.now());
@@ -53,6 +52,7 @@ public class SseService {
 		}
 		return regNumbers;
 	}
+
 	public void startSendingEvents() {
 		sseExecutor.execute(()->{
 			try {

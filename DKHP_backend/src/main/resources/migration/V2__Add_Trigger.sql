@@ -1,4 +1,4 @@
-use dkhpdb2;
+use dkhpdb;
 DELIMITER //
 CREATE TRIGGER decreaseDaDK
     AFTER DELETE ON registration

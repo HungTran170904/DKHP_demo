@@ -1,7 +1,7 @@
 import { API_ENDPOINT } from "../Util/Constraint";
 import AxiosService from "../Util/AxiosService";
 
-const subjectUrl = '/api/subject/admin';
+const subjectUrl = '/subject/admin';
 
 export const getAllSubjects = () => {
     return AxiosService.get(API_ENDPOINT + subjectUrl + '/getAllSubjects');

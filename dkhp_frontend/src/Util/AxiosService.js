@@ -11,6 +11,7 @@ class AxiosService {
     handleSucess(res) {
         return res;
     }
+    
     handleError(e) {
         return Promise.reject(e);
     }
@@ -18,6 +19,7 @@ class AxiosService {
     get(url) {
         return this.instance.get(url, { headers: { 'Authorization': localStorage.getItem("Authorization") } });
     }
+    
     post(url, body, isJSON) {
         if(body==undefined) body=null;
         console.log("body",body);

@@ -1,7 +1,7 @@
 import { API_ENDPOINT } from "../Util/Constraint";
 import AxiosService from "../Util/AxiosService";
 
-const studentUrl = '/api/student';
+const studentUrl = '/student';
 
 export const enrollCourses = (courseIds) => {
     let formData = new FormData();

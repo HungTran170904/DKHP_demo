@@ -1,7 +1,8 @@
 import { API_ENDPOINT } from "../Util/Constraint";
 import AxiosService from "../Util/AxiosService";
 import {SSE} from "sse.js"
-const url='/api/courses';
+
+const url='/courses';
 
 export const getOpenedCourses=()=>{
           return AxiosService.get(API_ENDPOINT + url+'/openedCourses');

@@ -1,7 +1,7 @@
 import { API_ENDPOINT } from "../Util/Constraint";
 import AxiosService from "../Util/AxiosService";
 
-const adminUrl = '/api/admin';
+const adminUrl = '/admin';
 
 export const addRegPeriod = (regPeriodData) => {
           return AxiosService.post(API_ENDPOINT + adminUrl + '/addRegPeriod',regPeriodData,true);

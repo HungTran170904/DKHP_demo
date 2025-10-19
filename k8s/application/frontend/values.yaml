@@ -36,10 +36,7 @@ securityContext: {}
 
 env:
   - name: API_ENDPOINT
-    valueFrom:
-      configMapKeyRef:
-        name: backend
-        key: API_ENDPOINT
+    value:  /
 
 pvc:
   enabled: false
@@ -51,12 +48,12 @@ service:
 ingress:
   enabled: true
   className: "nginx"
-  annotations: {}
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
   hosts:
-  - host: frontend.local
-    paths:
-      - path: /
-        pathType: Prefix
+    - paths:
+        - path: /?(.*)
+          pathType: ImplementationSpecific
   tls: []
 
 autoscaling:

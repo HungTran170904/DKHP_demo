@@ -22,11 +22,6 @@ podSecurityContext: {}
 
 securityContext: {}
 
-configmap:
-  enabled: true
-  data:
-    API_ENDPOINT: http://backend.local
-
 env:
   - name: DB_HOST
     value: mysql             
@@ -94,12 +89,12 @@ service:
 ingress:
   enabled: true
   className: "nginx"
-  annotations: {}
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
   hosts:
-  - host: backend.local
-    paths:
-      - path: /api
-        pathType: Prefix
+    - paths:
+        - path: /api(/|$)(.*)
+          pathType: ImplementationSpecific
   tls: []
 
 autoscaling:

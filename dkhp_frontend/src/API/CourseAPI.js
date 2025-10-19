@@ -27,6 +27,7 @@ export const getAllCourses = () => {
 export const removeCourse = (id) => {
     return AxiosService.delete(API_ENDPOINT + url + '/admin/removeCourse/' + id);
 }
+
 export const getUpdatedRegNumbers=(setRegNumbers)=>{
     var sseClient= new SSE(API_ENDPOINT + url +"/updateRegNumbers",{
       headers:{Authorization: localStorage.getItem("Authorization")}

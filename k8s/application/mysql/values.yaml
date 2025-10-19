@@ -36,18 +36,19 @@ env:
       configMapKeyRef:
         name: mysql
         key: DB_DATABASE
-  - name: MYSQL_ROOT_PASSWORD
+  - name: 
     valueFrom:
       secretKeyRef:
         name: mysql
         key: DB_PASS
 
 pvc:
-  enabled: true
+  enabled: false
   accessMode: ReadWriteOnce
   storage: 500Mi
   pvName: mysql-pv
   mountPath: /var/lib/mysql
+  # storageClassName: standard
 
 service:
   type: ClusterIP
